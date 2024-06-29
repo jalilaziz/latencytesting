@@ -11,7 +11,7 @@ SECURITY_GROUP_ID="sg-0c5747c8e9a83a8a5" # Update with your security group ID
 SUBNET_ID="subnet-0f48cf2f68fbd4749" # Update with your subnet ID
 
 # Binance WebSocket API endpoint
-BINANCE_API_ENDPOINT="hwss://stream.binance.com/stream?streams=btcusdt@bookTicker"
+BINANCE_API_ENDPOINT="wss://stream.binance.com/stream?streams=btcusdt@bookTicker"
 
 # Number of pings to perform
 NUM_PINGS=10
