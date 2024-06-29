@@ -14,7 +14,7 @@ SUBNET_ID="subnet-0f48cf2f68fbd4749" # Update with your subnet ID
 BINANCE_API_ENDPOINT="wss://stream.binance.com/stream?streams=btcusdt@bookTicker"
 
 # Number of pings to perform
-NUM_PINGS=10
+NUM_PINGS=100
 
 # Function to perform latency test
 test_latency() {
@@ -24,7 +24,9 @@ test_latency() {
     curl -s -o /dev/null -w "%{time_connect}" $BINANCE_API_ENDPOINT
     END_TIME=$(date +%s%N | cut -b1-13)
     LATENCY=$((END_TIME - START_TIME))
+    TOTAL_TIME=$((TOTAL_TIME + LATENCY))
     echo "Latency to $ip: $LATENCY ms"
+    AVG_LATENCY=$((TOTAL_TIME / NUM_PINGS))
   done
 }
 
@@ -60,7 +62,7 @@ for AZ in "${AZS[@]}"; do
   aws ec2 terminate-instances --instance-ids $INSTANCE_ID --region ap-northeast-1
   aws ec2 wait instance-terminated --instance-ids $INSTANCE_ID --region ap-northeast-1
   echo "Instance $INSTANCE_ID terminated."
+  echo "Availability Zone: $AZ, Average Latency: $AVG_LATENCY ms"
 done
 
 echo "Latency testing complete."
-
