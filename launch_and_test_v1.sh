@@ -25,6 +25,7 @@ test_latency() {
     END_TIME=$(date +%s%N | cut -b1-13)
     LATENCY=$((END_TIME - START_TIME))
     echo "Latency to $ip: $LATENCY ms"
+    AVG_LATENCY=$((TOTAL_TIME / NUM_PINGS))
   done
 }
 
@@ -55,12 +56,10 @@ for AZ in "${AZS[@]}"; do
   echo "Instance $INSTANCE_ID is running with IP $INSTANCE_IP"
   echo "Testing latency to Binance API from $INSTANCE_IP..."
   test_latency $INSTANCE_IP
+  echo "Availability Zone: $AZ, Average Latency: $AVG_LATENCY ms"
 
-  echo "Terminating instance $INSTANCE_ID..."
-  aws ec2 terminate-instances --instance-ids $INSTANCE_ID --region ap-northeast-1
-  aws ec2 wait instance-terminated --instance-ids $INSTANCE_ID --region ap-northeast-1
-  echo "Instance $INSTANCE_ID terminated."
 done
 
 echo "Latency testing complete."
+echo "Availability Zone: $AZ, Average Latency: $AVG_LATENCY ms"
 
