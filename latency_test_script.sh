@@ -15,10 +15,10 @@ test_latency() {
     END_TIME=$(date +%s%N | cut -b1-13)
     LATENCY=$((END_TIME - START_TIME))
     TOTAL_TIME=$((TOTAL_TIME + LATENCY))
-    echo "Latency to $ip: $LATENCY ms"
+    echo "Latency: $LATENCY ms"
   done
   AVG_LATENCY=$((TOTAL_TIME / NUM_PINGS))
-  echo "Average Latency: $AVG_LATENCY ms In"
+  
 }
 
 # Run the latency test
