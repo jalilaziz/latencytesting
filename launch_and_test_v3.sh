@@ -6,14 +6,14 @@ INSTANCE_TYPE="t2.micro"
 KEY_NAME="LatencyTesting" # Replace with your key pair name
 SECURITY_GROUP_IDS="sg-0c5747c8e9a83a8a5" # Replace with your security group ID
 SUBNET_IDS=("subnet-0d52f57a224ba5ea9" "subnet-0f48cf2f68fbd4749" "subnet-0a1df730283fb2767") # Replace with your subnet IDs for each AZ
-PLACEMENT_GROUPS=("ClusterPG1" "ClusterPG2" "ClusterPG3")
+PLACEMENT_GROUPS=("PatitionPG1" "PatitionPG2" "PatitionPG3")
 AZS=("ap-northeast-1a" "ap-northeast-1c" "ap-northeast-1d")
 REGION="ap-northeast-1"
 
 # Create placement groups
 create_placement_groups() {
   for PG in "${PLACEMENT_GROUPS[@]}"; do
-    aws ec2 create-placement-group --group-name "$PG" --strategy cluster --region "$REGION"
+    aws ec2 create-placement-group --group-name "$PG" --strategy patition --region "$REGION"
     echo "Created placement group $PG"
   done
 }
@@ -77,6 +77,7 @@ perform_latency_testing() {
       END_TIME=$(date +%s%N | cut -b1-13)
       LATENCY=$((END_TIME - START_TIME))
       TOTAL_TIME=$((TOTAL_TIME + LATENCY))
+      echo "Latency: $LATENCY ms" >> /var/log/latency_test_result.log
     done
     AVG_LATENCY=$((TOTAL_TIME / NUM_PINGS))
     echo "Placement Group: $PG, Availability Zone: $AZ, Average Latency: $AVG_LATENCY ms" >> /var/log/latency_test_result.log
